@@ -4,8 +4,12 @@ The purpose of this resolver is to retrieve EC2 Image ID from the AWS.
 
 ## Install
 
-```bash
+```shell
 pip install sceptre-aws-ami-resolver
+```
+or
+```shell
+pip install git+https://github.com/harisfauzi/sceptre-aws-ami-resolver.git
 ```
 
 ## Available Resolvers
