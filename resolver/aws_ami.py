@@ -43,8 +43,8 @@ class AwsAmiBase(Resolver):
 
     def _request_image(self, filters, region, profile=None, owners=None):
         """
-        Communicates with AWS EC2 to fetch VPC Information.
-        :returns: The JSON block of the VPC info
+        Communicates with AWS EC2 to fetch image Information.
+        :returns: The JSON block of the image info
         :rtype: dict
         :raises: resolver.exceptions.ImageNotFoundError
         """
@@ -54,7 +54,7 @@ class AwsAmiBase(Resolver):
             self.logger.debug("Calling ec2.describe_images")
             kwargs = {"Filters": filters}
             if owners:
-                kwargs["Owners": owners]
+                kwargs["Owners"] = owners
             response = connection_manager.call(
                 service="ec2",
                 command="describe_images",
@@ -146,3 +146,26 @@ class AwsAmi(AwsAmiBase):
         self.logger.debug("Resolving image with name pattern: {0}".format(name))
         instance_id = self._get_image_id(filters, region, profile, owners)
         return instance_id
+
+def main():
+    """The main function"""
+    fake_argument = {
+        "name": "al2023-ami-2023.?.????????.?-kernel-?.?-arm64",
+        "owners": ["amazon"],
+        "region": "ap-southeast-2",
+        "tag:Environment": ["production"]
+    }
+    resolver = AwsAmi(fake_argument)
+    ami_id = resolver.resolve()
+    print(f"ami_id={ami_id}")
+
+
+# To test this resolver, run it like this:
+# AWS_PROFILE=<your profile>
+# AWS_DEFAULT_REGION=<AWS region>
+# export AWS_PROFILE AWS_DEFAULT_REGION
+# python ./aws_ami.py
+# It should return the AMI ID
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()
